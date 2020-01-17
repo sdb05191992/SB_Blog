@@ -12,6 +12,7 @@ using SB_Blog.Models;
 namespace SB_Blog.Controllers
 {
     public class BlogPostsController : Controller
+        //Comment
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
