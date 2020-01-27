@@ -1,74 +1,242 @@
-﻿@model SB_Blog.Models.BlogPost
+﻿@model SB_Blog.Models.BlogDetailsViewModel
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<div id="blog-details" class="section-padding tr-margin-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="entry-post">
+                    <div class="time">
+                        <a>@Model.CurrentBlog.Created.Day.ToString("00") <span>@Model.CurrentBlog.Created.ToString("MMM")</span></a>
+                    </div>
+                    <div class="post-content">
+                        <div class="entry-title">
+                            <h2>@Html.DisplayFor(model => model.CurrentBlog.Title)</h2>
+                        </div>
 
-<div>
-    <h4>BlogPost</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
+                    </div>
+                    <br />
+                    <div class="entry-thumbnail">
 
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
+                        @if (Model.CurrentBlog.MediaURL != null)
+                        {
+                            <img class="img-fluid" src="@Model.CurrentBlog.MediaURL" alt="">
+                        }
+                        else
+                        {
+                            <img class="img-fluid" width="749" height="549" src="~/Template/images/blog/beach.jpg" alt="Image">
+                        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
+                    </div>
+                </div>
+                <div class="entry-summary">
+                    <p>@Html.Raw(Model.CurrentBlog.Body)</p>
+                </div>
+                <div>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <p>
+                            @Html.ActionLink("Edit", "Edit", new { id = Model.CurrentBlog.Id }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = Model.CurrentBlog.Id }) 
 
-        <dd>
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
+                        </p>
+                    }
+                    @Html.ActionLink("Back to List", "Index")
+                </div>
+                <div class="blog-social">
+                    <ul class="list-inline">
+                        <li><a href="#"><img class="img-fluid" src="~/Template/images/blog/8.jpg" alt="Image"></a></li>
+                        <li><a href="#"><img class="img-fluid" src="~/Template/images/blog/9.jpg" alt="Image"></a></li>
+                        <li><a href="#"><img class="img-fluid" src="~/Template/images/blog/10.jpg" alt="Image"></a></li>
+                        <li><a href="#"><img class="img-fluid" src="~/Template/images/blog/11.jpg" alt="Image"></a></li>
+                    </ul>
+                </div><!-- blog social -->
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
+                <div class="post-action">
+                    <ul>
 
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Slug)
-        </dt>
+                        @if (@Model.PreviousBlog.Title != null)
+                        {
+                            <li class="previous-post">
+                                <span>Previous Post</span>
+                                <h3><a href="@Url.Action("Details", "BlogPosts", new { Slug = Model.PreviousBlog.Slug })">@Model.PreviousBlog.Title</a></h3>
+                            </li>
+                        }
 
-        <dd>
-            @Html.DisplayFor(model => model.Slug)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Body)
-        </dt>
+                        @if (@Model.NextBlog != null)
+                        {
+                            <li class="next-post">
+                                <span>Next Post</span>
+                                <h3><a href="@Url.Action("Details", "BlogPosts", new { Slug = Model.NextBlog.Slug })">@Model.NextBlog.Title</a></h3>
+                            </li>
+                        }
 
-        <dd>
-            @Html.DisplayFor(model => model.Body)
-        </dd>
+                    </ul>
+                </div><!-- post action -->
+                <!--Comments Section-->
+                <div class="comments">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h3>Comments (@Model.CurrentBlog.Comments.Count)</h3>
+                            @foreach (var item in Model.CurrentBlog.Comments)
+                            {
+                                <div class="col-md-12">
+                                    <div class="comment">
+                                        <h5>@item.Author.FirstName @item.Author.LastName</h5>
+                                        <h6><i>@item.Created.ToString("f")</i></h6>
+                                        <p>@item.Body</p>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                                        {
+                                            <p>
+                                                @Html.ActionLink("Edit", "Edit", "Comments", new { id = item.Id }, new { @class = "btn btn-primary" }) |
+                                                @Html.ActionLink("Delete", "Delete", "Comments", new { id = item.Id }, new { @class = "btn btn-primary" })
+                                            </p>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form id="contact-form" class="contact-form" name="contact-form" method="post" action="@Url.Action("Create","Comments")">
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("BlogPostId", Model.CurrentBlog.Id)
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <textarea name="commentBody" required="required" class="form-control" rows="7" placeholder="Your comment"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group pull-right">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <p>@Html.ActionLink("Please login to leave a comment.", "Login", "Account", new { returnUrl = Url.Action("Details", "Blogs", new { Slug = Model.CurrentBlog.Slug }) }, new { @class = "btn btn-sm btn-warning" }) </p>
+                }
+            </div>
+            <div id="sidebar" class="col-sm-4">
+                <aside id="sidebar" class="widget-area">
+                    <div class="widget widget_search">
+                        @using (Html.BeginForm("Index", "BlogPosts", FormMethod.Get, htmlAttributes: new { @class = "form" }))
+                        {
+                            <form role="search" id="search-form" method="get" action="#">
+                                <input type="search" class="form-control" autocomplete="off" name="searchStr" placeholder="Search..." id="searchStr" value="">
+                                <button type="submit" id="searchStr" class="btn" name="searchStr"><i class="fa fa-search"></i></button>
+                            </form>
+                        }
+                    </div>
+                    <div class="widget widget_text">
+                        <h3 class="widget_title">Image of the Day</h3>
+                        <div class="textwidget">
+                            <img class="img-fluid" width="360" height="264" src="~/Template/images/blog/beachthumb.jpg" alt="">
+                        </div>
+                    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.MediaURL)
-        </dt>
+                    <div class="widget widget_categories">
+                        <h3 class="widget_title">Popular Categories</h3>
+                        <ul>
+                            <li>@Html.ActionLink("Progress", "Index", new { searchStr = "Progress" })</li>
+                            <li>@Html.ActionLink("Reflection", "Index", new { searchStr = "Reflection" })</li>
+                        </ul>
+                    </div>
+                    <div class="widget widget_categories">
+                        <h3 class="widget_title">Popular Tags</h3>
+                        @Html.ActionLink("html", "Index", new { searchStr = "html" })
+                        @Html.ActionLink("javascript", "Index", new { searchStr = "javascript" })
+                        @Html.ActionLink("c#", "Index", new { searchStr = "c#" })
+                    </div>
+                </aside><!-- #secondary -->
+            </div><!-- sidebar -->
+        </div><!-- row -->
+    </div><!-- container -->
+</div><!-- blog section -->
+<div id="footer">
+    <div class="container text-center">
+        <div class="footer">
+            <p> &copy; 2020 <a href="#">Shanese Black.</a> All Rights Reserved</p>
+        </div>
+    </div><!-- contaner -->
+</div><!-- footer -->
+@*@model SB_Blog.Models.BlogPost
 
-        <dd>
-            @Html.DisplayFor(model => model.MediaURL)
-        </dd>
+    @{
+        ViewBag.Title = "Details";
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Published)
-        </dt>
+    <h2>Details</h2>
 
-        <dd>
-            @Html.DisplayFor(model => model.Published)
-        </dd>
+    <div>
+        <h4>BlogPost</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Created)
+            </dt>
 
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+            <dd>
+                @Html.DisplayFor(model => model.Created)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Updated)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Updated)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Slug)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Slug)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Body)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Body)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.MediaURL)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.MediaURL)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Published)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Published)
+            </dd>
+
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>*@

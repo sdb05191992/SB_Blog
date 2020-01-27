@@ -6,6 +6,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using SB_Blog.Models;
+using Owin.Security.Providers.LinkedIn;
 
 namespace SB_Blog
 {
@@ -54,15 +55,17 @@ namespace SB_Blog
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "850970225381835",
+               appSecret: "de5ea4eae9acfa6bb1ad80ef336df7a4");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "282358727461-hk2aku1bfha9l682t0rt96g0gm7nhldc.apps.googleusercontent.com",
+                ClientSecret = "MaE0hkz64lKf0Ild5ePvmUWl"
+            });
+
+            app.UseLinkedInAuthentication("78w0cncsybj93r", "MB96zxRRkzGxyjfB");
         }
     }
 }

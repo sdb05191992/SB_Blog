@@ -4,89 +4,293 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
+    <div id="blog-details" class="section-padding tr-margin-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="entry-post">
+                        <div class="time">
+                            <a>@Model.Created.Day.ToString("00") <span>@Model.Created.ToString("MMM")</span></a>
+                        </div>
+                        <div class="post-content">
+                            <div class="entry-title">
+                                <h2>@Html.DisplayFor(model => model.Title)</h2>
+                            </div>
+
+                        </div>
+                        <br />
+
+                        @if (Model.MediaURL != null)
+                        {
+                            <img class="img-fluid" width="749" height="549" src="@Model.MediaURL" alt="">
+                        }
+                        else
+                        {
+                            <img class="img-fluid" width="749" height="549" src="~/Template/images/blog/beach.jpg" alt="Image">
+                        }
+                    </div>
+                    <div class="entry-summary">
+                        @using (Html.BeginForm("Edit", "BlogPosts", FormMethod.Post, new { enctype = "Multipart/form-data" }))
 
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+                                <h4>BlogPost</h4>
+                                <hr />
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                @Html.HiddenFor(model => model.Id)
+
+                                @*<div class="form-group">
+                                        @Html.LabelFor(model => model.Updated, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-10">
+                                            @Html.EditorFor(model => model.Updated, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.Updated, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>*@
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-12">
+                                        <div id="editor">
+                                            @Html.Raw(Model.Body)
+                                        </div>
+                                        @*@Html.EditorFor(model => model.Body, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.MediaURL, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        <input name="image" type="file" class="form-control" id="fileUpload" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Published, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        <div class="checkbox">
+                                            @Html.EditorFor(model => model.Published)
+                                            @Html.ValidationMessageFor(model => model.Published, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Save" class="btn btn-default" />
+                                    </div>
+                                    <div>
+                                        @Html.ActionLink("Back to List", "Index")
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+
+                    </div>
+                    <div class="blog-social">
+                        <ul class="list-inline">
+                            <li><a href="#"><img class="img-fluid" src="~/Template/images/blog/8.jpg" alt="Image"></a></li>
+                            <li><a href="#"><img class="img-fluid" src="~/Template/images/blog/9.jpg" alt="Image"></a></li>
+                            <li><a href="#"><img class="img-fluid" src="~/Template/images/blog/10.jpg" alt="Image"></a></li>
+                            <li><a href="#"><img class="img-fluid" src="~/Template/images/blog/11.jpg" alt="Image"></a></li>
+                        </ul>
+                    </div><!-- blog social -->
+
+                    @*<div class="post-action">
+                        <ul>
+                            <li class="previous-post">
+                                <span>Previous Post</span>
+                                <h3><a href="#">Cross Browser Compatible now your hand</a></h3>
+                            </li>
+                            <li class="next-post">
+                                <span>Next Post</span>
+                                <h3><a href="#">Performance Optimization for Websites.</a></h3>
+                            </li>
+                        </ul>
+                    </div>*@<!-- post action -->
+                    @*<div class="contact">
+                            <div class="contact-info">
+                                <div class="title">
+                                    <div class="icons">
+                                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                    </div>
+                                    <h3>Leave me a message</h3>
+                                </div>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+                            </div>
+                            <form id="contact-form" class="contact-form" name="contact-form" method="post" action="#">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" required="required" placeholder="Full Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" required="required" placeholder="Your email id">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" required="required" placeholder="Subject">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <textarea name="message" required="required" class="form-control" rows="7" placeholder="Your message"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group pull-right">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div> contact*@
+                </div>
+                <div id="sidebar" class="col-sm-4">
+                    <aside id="sidebar" class="widget-area">
+                        <div class="widget widget_search">
+                            <form role="search" id="search-form" method="get" action="#">
+                                <input type="search" class="form-control" autocomplete="off" name="s" placeholder="Search..." id="search-input" value="">
+                                <button type="submit" id="search-submit" class="btn"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                        <div class="widget widget_text">
+                            <h3 class="widget_title">Image of the Day</h3>
+                            <div class="textwidget">
+
+                                <img class="img-fluid" width="360" height="264" src="~/Template/images/blog/beachthumb.jpg" alt="">
+                            </div>
+                        </div>
+
+                        <div class="widget widget_categories">
+                            <h3 class="widget_title">Popular Categories</h3>
+                            <ul>
+                                <li>@Html.ActionLink("Progress", "Index", new { searchStr = "Progress" })</li>
+                                <li>@Html.ActionLink("Reflection", "Index", new { searchStr = "Reflection" })</li>
+                            </ul>
+                        </div>
+                        <div class="widget widget_categories">
+                            <h3 class="widget_title">Popular Tags</h3>
+                            @Html.ActionLink("html", "Index", new { searchStr = "html" })
+                            @Html.ActionLink("javascript", "Index", new { searchStr = "javascript" })
+                            @Html.ActionLink("c#", "Index", new { searchStr = "c#" })
+                        </div>
+                    </aside><!-- #secondary -->
+                </div><!-- sidebar -->
+            </div><!-- row -->
+        </div><!-- container -->
+    </div><!-- blog section -->
     
-    <div class="form-horizontal">
-        <h4>BlogPost</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Created, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Created, "", new { @class = "text-danger" })
+
+
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            tinymce.init({
+                selector: '#editor'
+            });
+        });
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+@*@using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>BlogPost</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Created, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Created, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Updated, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Updated, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Updated, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Updated, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Updated, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Updated, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Slug, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Slug, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Slug, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Slug, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Slug, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Slug, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Body, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Body, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.MediaURL, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.MediaURL, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.MediaURL, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.MediaURL, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.MediaURL, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MediaURL, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Published, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.Published)
-                    @Html.ValidationMessageFor(model => model.Published, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Published, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Published)
+                        @Html.ValidationMessageFor(model => model.Published, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
                 </div>
             </div>
         </div>
+    }
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
+    <div>
+        @Html.ActionLink("Back to List", "Index")
     </div>
-}
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

@@ -1,74 +1,188 @@
-﻿@model IEnumerable<SB_Blog.Models.BlogPost>
+﻿@model IPagedList<SB_Blog.Models.BlogPost>
 
-@{
-    ViewBag.Title = "Index";
+@using Microsoft.AspNet.Identity;
+@using PagedList;
+@using PagedList.Mvc;
+
+
+<div id="blog" class="blog-section section-padding tr-margin-top">
+    <div class="container">
+        <p>
+            @if (User.IsInRole("Admin"))
+            {
+                @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-outline-danger btn-xs" })
+            }
+
+        </p>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    @{
+                        Random random = new Random();
+
+                        foreach (var item in Model)
+                        {
+                            <div class="col-md-6">
+
+                                <div class="entry-post">
+                                    <div class="entry-thumbnail">
+                                        <div class="thumbnail-oberlay"></div>
+
+                                        @if (item.MediaURL != null)
+                                        {
+                                            <img class="img-fluid" width="360" height="264" src="@item.MediaURL" alt="Image">
+                                        }
+                                        else
+                                        {
+                                            string[] pic = { "1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg" };
+
+                                            int index = random.Next(pic.Length);
+                                            <img class="img-fluid" width="360" height="264" src="~/Template/images/blog/@pic[index]" alt="Image">
+                                        }
+
+                                    </div>
+                                    <div class="post-content">
+                                        @{
+                                            string[] style = { "time", "time time1", "time time2", "time time3", "time time4", "time time5"};
+                                            int index2 = random.Next(style.Length);
+                                        }
+                                        <div class="@style[index2]">
+                                            <a>@item.Created.Day.ToString("00") <span>@item.Created.ToString("MMM")</span></a>
+                                        </div>
+                                        <div class="entry-title">
+                                            <h2><a href="@Url.Action("Details", "BlogPosts", new { Slug = item.Slug })">@item.Title</a></h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    }
+                </div><!-- row -->
+            </div>
+            <div class="col-md-4">
+                <aside id="sidebar" class="widget-area">
+
+                    <div class="widget widget_search">
+                        @using (Html.BeginForm("Index", "BlogPosts", FormMethod.Get, htmlAttributes: new { @class = "form" }))
+                        {
+                            <form role="search" id="search-form" method="get" action="#">
+                                <input type="search" class="form-control" autocomplete="off" name="searchStr" placeholder="Search..." id="searchStr" value="">
+                                <button type="submit" id="searchStr" class="btn" name="searchStr"><i class="fa fa-search"></i></button>
+                            </form>
+                        }
+                    </div>
+
+                    <div class="widget widget_text">
+                        <h3 class="widget_title">Image of the Day</h3>
+                        <div class="textwidget">
+                            <img class="img-fluid" width="360" height="264" src="~/Template/images/blog/beachthumb.jpg" alt="">
+                        </div>
+                    </div>
+
+                    <div class="widget widget_categories">
+                        <h3 class="widget_title">Popular Topics</h3>
+                        <ul>
+                            <li>@Html.ActionLink("Blogs", "Index", "BlogPosts") (@Model.Count())</li>
+                            <li> Comments (@ViewBag.CommentCount)</li>
+                            <li>@Html.ActionLink("Progress", "Index", new { searchStr = "Progress" }) (@ViewBag.Progress)</li>
+                            
+                            <li>@Html.ActionLink("Reflection", "Index", new { searchStr = "Reflection" }) (@ViewBag.Reflection)</li>
+                        </ul>
+                    </div>
+                    <div class="widget widget_categories">
+                        <h3 class="widget_title">Popular Tags</h3>
+                        @Html.ActionLink("html", "Index", new { searchStr = "html" })
+                        @Html.ActionLink("javascript", "Index", new { searchStr = "javascript" })
+                        @Html.ActionLink("c#", "Index", new { searchStr = "c#" })
+                    </div>
+                </aside><!-- #secondary -->
+            </div><!-- sidebar -->
+        </div>
+    </div><!-- container -->
+</div><!-- blog section -->
+
+<center>@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchStr = ViewBag.Search }))</center>;
+
+
+@*@section scripts{
+    <script>
+
+    </script>*@
 }
 
-<h2>Index</h2>
+@*@model IEnumerable<SB_Blog.Models.BlogPost>
 
-<p>
-    @if (User.IsInRole("Admin"))
-    {
-        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-info btn-xs" })
+    @{
+        ViewBag.Title = "Index";
     }
 
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Created)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Updated)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Slug)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Body)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MediaURL)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Published)
-        </th>
-        <th></th>
-    </tr>
+    <h2>Index</h2>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Created)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Updated)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Slug)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Body)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MediaURL)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Published)
-        </td>
-        <td>
-            @*Changed the Details action link so that it searches using the slug, not the id & then passes it to the blog post controller*@
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { Slug=item.Slug }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    <p>
+        @if (User.IsInRole("Admin"))
+        {
+            @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-info btn-xs" })
+        }
 
-</table>
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Updated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Slug)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MediaURL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Published)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Updated)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Slug)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Body)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MediaURL)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Published)
+                </td>
+                <td>
+                    Changed the Details action link so that it searches using the slug, not the id & then passes it to the blog post controller
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { Slug = item.Slug }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>*@

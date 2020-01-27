@@ -1,17 +1,73 @@
-﻿@{
-    ViewBag.Title = "Contact";
+﻿@model SB_Blog.Models.EmailModel
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container">
+        <div class="col-sm-8">
+            <div class="contact">
+                <div class="contact-info">
+                    <div class="title">
+                        <div class="icons">
+                            <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                        </div>
+                        <h3>Send me a message</h3>
+                        <p>To contact me directly please fill out the form below.</p>
+                    </div>
+                </div>
+                <form id="contact-form" class="contact-form" name="contact-form" method="post" action="#">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input name="FromName" type="text" class="form-control" required="required" placeholder="Full Name">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input name="FromEmail" type="email" class="form-control" required="required" placeholder="Your email">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <textarea name="Message1" required="required" class="form-control" rows="7" placeholder="Your message"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <br />
+                        <button type="submit" class="btn btn-group-sm btn-info" value="Send">Submit</button>
+                    </div>
+                </form>
+            </div><!-- contact -->
+        </div>
+    </div>
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
-
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+@*@using (Html.BeginForm())
+            {
+    @Html.AntiForgeryToken()
+    <h4>Send me a message.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.FromName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.FromName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.FromName)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.FromEmail, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.FromEmail, new { @class = "form-control", placeholder = "example@email.com" })
+            @Html.ValidationMessageFor(m => m.FromEmail)
+        </div>
+    </div>
+    <div class"form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary" value="Send" />
+        </div>
+    </div>
+            }*@
